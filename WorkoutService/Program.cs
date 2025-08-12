@@ -1,10 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using WorkoutService.Data;
+using IWorkoutService = WorkoutService.Interface.IWorkoutService;
+using WorkoutSvc = WorkoutService.Services.WorkoutService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<WorkoutDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IWorkoutService, WorkoutSvc>();
 
 builder.Services.AddCors(options =>
 {
