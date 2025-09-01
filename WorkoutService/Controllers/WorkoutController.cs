@@ -20,7 +20,7 @@ public class WorkoutsController : ControllerBase
     public async Task<IActionResult> GetAllAsync()
         => Ok(await _service.GetAllAsync());
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "GetWorkoutById")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         var workout = await _service.GetByIdAsync(id);
@@ -39,7 +39,7 @@ public class WorkoutsController : ControllerBase
     public async Task<IActionResult> CreateAsync([FromBody] WorkoutModel model)
     {
         var created = await _service.CreateAsync(model);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
+        return CreatedAtRoute("GetWorkoutById", new { id = created.Id }, created);
     }
 
 
