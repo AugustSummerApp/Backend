@@ -35,11 +35,15 @@ public class WorkoutService : IWorkoutService
         return model;
     }
 
-    public async Task<IEnumerable<WorkoutModel>> GetByDateAsync()
+    public async Task<IEnumerable<WorkoutModel>> GetByDateAsync(DateOnly Date)
     {
+        var start = Date.ToDateTime(TimeOnly.MinValue);
+        var end = Date.ToDateTime(TimeOnly.MaxValue);
+
         return await _context.WorkoutSession
-                             .AsNoTracking()
-                             .OrderBy(w => w.Date)
-                             .ToListAsync();
+            .AsNoTracking()
+            .Where(w => w.Date >= start && w.Date < end)
+            .OrderBy(w => w.Id)
+            .ToListAsync();
     }
 }

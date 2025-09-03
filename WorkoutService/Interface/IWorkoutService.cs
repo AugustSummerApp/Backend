@@ -6,7 +6,7 @@ namespace WorkoutService.Interface
     {
         Task<WorkoutModel> CreateAsync(WorkoutModel model);
         Task<IEnumerable<WorkoutModel>> GetAllAsync();
-        Task<IEnumerable<WorkoutModel>> GetByDateAsync();
         Task<WorkoutModel?> GetByIdAsync(int id);
+        Task<IEnumerable<WorkoutModel>> GetByDateAsync(DateOnly Date);
     }
 }

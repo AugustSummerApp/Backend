@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WorkoutService.DTOs;
 using WorkoutService.Interface;
 using WorkoutService.Models;
 
@@ -10,6 +11,7 @@ namespace WorkoutService.Controllers;
 public class WorkoutsController : ControllerBase
 {
     private readonly IWorkoutService _service;
+    private readonly TimeZoneInfo SweTz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm");
 
     public WorkoutsController(IWorkoutService service)
     {
@@ -28,11 +30,23 @@ public class WorkoutsController : ControllerBase
         return Ok(workout);
     }
 
-    [HttpGet("bydate")]
-    public async Task<ActionResult<IEnumerable<WorkoutModel>>> GetByDateAsync()
+    [HttpGet("summary")]
+    public async Task<ActionResult<WorkoutSummaryDto>> GetSummary([FromQuery] DateOnly? date)
     {
-        var list = await _service.GetByDateAsync();
-        return Ok(list);
+        var todaySwe = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, SweTz));
+        var target = date ?? todaySwe;
+
+        var workouts = await _service.GetByDateAsync(target);
+
+        var dto = new WorkoutSummaryDto
+        {
+            Date = target,
+            PrevDate = target.AddDays(-1),
+            NextDate = target.AddDays(+1),
+            TotalWorkouts = workouts.Count(),
+            Workouts = workouts
+        };
+        return Ok(dto);
     }
 
     [HttpPost]
@@ -41,7 +55,6 @@ public class WorkoutsController : ControllerBase
         var created = await _service.CreateAsync(model);
         return CreatedAtRoute("GetWorkoutById", new { id = created.Id }, created);
     }
-
 
 }
 
