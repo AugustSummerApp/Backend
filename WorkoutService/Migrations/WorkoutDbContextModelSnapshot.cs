@@ -22,6 +22,27 @@ namespace WorkoutService.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("WorkoutService.Models.ExerciseModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ExerciseModel", (string)null);
+                });
+
             modelBuilder.Entity("WorkoutService.Models.WorkoutModel", b =>
                 {
                     b.Property<int>("Id")
@@ -37,9 +58,8 @@ namespace WorkoutService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ExerciseType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -57,7 +77,20 @@ namespace WorkoutService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WorkoutSession");
+                    b.HasIndex("ExerciseId", "Date");
+
+                    b.ToTable("WorkoutSession", (string)null);
+                });
+
+            modelBuilder.Entity("WorkoutService.Models.WorkoutModel", b =>
+                {
+                    b.HasOne("WorkoutService.Models.ExerciseModel", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
                 });
 #pragma warning restore 612, 618
         }

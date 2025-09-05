@@ -10,19 +10,20 @@ public class WorkoutModel
     [Required]
     public DateTime Date { get; set; }
 
-    [Required]
+    [Required] 
     public string Name { get; set; } = null!;
 
     [Required]
-    public string ExerciseType { get; set; } = string.Empty;
+    public int ExerciseId { get; set; }
+    public ExerciseModel Exercise { get; set; } = null!;
 
     [Range(1, 30)]
-    public int Sets { get; set; } 
+    public int Sets { get; set; }
 
     [Range(1, 30)]
-    public int Reps { get; set; } 
+    public int Reps { get; set; }
 
-    [Precision (18, 2), Range(0, 1000)]
+    [Precision(18, 2), Range(0, 1000)]
     public decimal Weight { get; set; }
 
     [Required]
